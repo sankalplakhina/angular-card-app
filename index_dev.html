@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Angular Card App</title>
+
+        <link rel="shortcut icon" href="app/img/favicon.jpg">
+
+        <!-- Bootstrap Core CSS -->
+        <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+        <!-- Animate CSS -->
+        <link href="app/css/animate.css" rel="stylesheet">
+        <!-- App -->
+        <link rel="stylesheet" type="text/css" href="app/css/app.css" />
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+<script src="bower_components/html5shiv/dist/html5shiv.min.js"></script>
+<script src="bower_components/respond/dest/respond.min.js"></script>
+<![endif]-->
+
+    </head>
+
+    <body data-ng-app="angularCardApp">
+
+        <!-- Header -->
+        <header data-ng-controller="HeaderController">
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#">Angular Card App</a>
+                    </div>
+                    <div class="pull-right">
+                        <span data-toggle="tooltip" data-placement="bottom" title="Grid View" class="glyphicon glyphicon-th-large icon-custom" data-ng-show="listView" data-ng-click="toggleView()" aria-hidden="true"></span>
+                        <span data-toggle="tooltip" data-placement="bottom" title="List View" class="glyphicon glyphicon-th-list icon-custom" data-ng-hide="listView" data-ng-click="toggleView()" aria-hidden="true"></span>
+                        <span data-toggle="tooltip" data-placement="bottom" title="Add Card" class="glyphicon glyphicon-plus icon-custom icon-add" data-toggle="modal" data-ng-click="addNewCard()" aria-hidden="true"></span>
+                    </div>
+                    <div class="reset-icon">
+                        <span data-toggle="tooltip" data-placement="bottom" title="Clear Localstorage" class="glyphicon glyphicon-repeat icon-custom" data-toggle="modal" data-ng-click="clearLocalstorage()" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </nav> 
+        </header><!-- /Header -->
+
+
+        <!-- Body container -->
+        <div class="container" data-ng-controller="BodyController">
+
+            <!-- Searchbar -->
+            <div class="row">
+                <div class="col-md-offset-1 col-md-10">
+                    <div id="imaginary_container"> 
+                        <div class="input-group stylish-input-group">
+                            <input type="text" class="form-control"  placeholder="Search" data-ng-model="searchtext">
+                            <span class="input-group-addon">
+                                <button type="submit">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>  
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /Searchbar -->
+
+            <div ng-cloak id="cardContainer" infinite-scroll='loadMore()' infinite-scroll-distance='0' ng-class="listView? 'list-view' : ''" class="row card-row-margin">
+                <!-- Card repeat -->
+                <div ng-mouseenter="showEdit = true;" ng-mouseleave="showEdit = false;" ng-repeat="card in cards | filter:{title   : searchtext}" class="animated" ng-class="listView? 'col-md-12 flipInX' : 'col-md-6 flipInY'">
+                    <div class="thumbnail">
+                        <div class="img-container">
+                            <img class="image-style" data-ng-src="{{card.imageUrl}}">
+                        </div>
+                        <div class="caption">
+                            <h3 id="thumbnail-label">{{card.title}}<a class="anchorjs-link" href="#thumbnail-label"><span class="anchorjs-icon"></span></a><span ng-show="showEdit" ng-click="editCard(card, $index);" class="glyphicon glyphicon-pencil icon-cursor pull-right" aria-hidden="true"></span></h3>
+                            <p data-ng-bind="card.description"></p>
+                        </div>
+                    </div>
+                </div><!-- /Card repeat -->
+
+            </div>
+
+            <!-- Add Card Modal Section -->
+            <section>        
+                <!-- Modal -->
+                <div class="modal fade" id="CardModal" tabindex="-1" role="dialog" aria-labelledby="CardModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="CardModalLabel">Edit Card</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <img class="image-style image-shadow" data-ng-src="{{modalObj.imageUrl}}">
+                                </div>
+                                <form>
+                                    <div class="form-group">
+                                        <label for="title-name" class="control-label">Title:</label>
+                                        <input type="text" class="form-control" id="title-name" data-ng-model="modalObj.title">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description-text" class="control-label">Description:</label>
+                                        <textarea class="form-control" id="description-text" data-ng-model="modalObj.description"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-ng-click="deleteCard()">Delete Card</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" data-ng-click="saveCardDetails()">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /Modal -->
+            </section><!-- /Add Card Modal Section -->
+
+        </div><!-- /Body container -->
+        <footer>
+            <div class="pull-right" style="color:white">Developed by Sankalp Lakhina [ sankalp.lakhina91@gmail.com ]</div>
+        </footer>
+
+        <!-- jQuery -->
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <!-- Boostrap -->
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <!-- Angular -->
+        <script src="bower_components/angular/angular.js"></script>
+        <!-- Infinite Scroll -->
+        <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
+        <!-- ngStorage Module -->
+        <script src="bower_components/ngstorage/ngStorage.js"></script>
+        <!-- Angular Card App JS -->
+        <script src="app/js/app.js"></script>
+
+    </body>
+
+</html>

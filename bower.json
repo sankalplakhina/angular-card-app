@@ -1,0 +1,33 @@
+{
+  "name": "angular-card-app",
+  "version": "1.0.0",
+  "authors": [
+    "Sankalp Lakhina <sankalp.lakhina91@gmail.com>"
+  ],
+  "description": "An app which shows a card stack layout using Angular",
+  "main": "index.html",
+  "keywords": [
+    "card",
+    "layout",
+    "angular"
+  ],
+  "license": "MIT",
+  "homepage": "index.html",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.4",
+    "respond": "~1.4.2",
+    "angular": "1.2.28",
+    "jquery": "1.11.2",
+    "html5shiv": "~3.7.2",
+    "ngInfiniteScroll": "~1.2.0",
+    "ngstorage": "~0.3.0"
+  }
+}
